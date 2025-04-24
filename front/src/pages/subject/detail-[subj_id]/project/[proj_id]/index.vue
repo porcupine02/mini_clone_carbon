@@ -89,7 +89,6 @@ const getProject = async () => {
                 Authorization: `Bearer ${accessToken.value}`
             }
         })
-        // console.log('res', res.data.value)
         project.value = res.data.value as ProjectResponse
     } catch (err) {
         console.error('Get Project failed:', err)
@@ -105,7 +104,6 @@ const getFormOfSubject = async () => {
                 Authorization: `Bearer ${accessToken.value}`
             }
         })
-        // console.log('res', res.data.value)
         listOfForm.value = res.data.value as FormResponse[]
     } catch (err) {
         console.error('Get Project failed:', err)
@@ -121,8 +119,6 @@ const getMainForm = async () => {
                 Authorization: `Bearer ${accessToken.value}`
             }
         })
-        // console.log('res', res.data.value)
-        // console.log('path', `http://localhost:8000/form/main-forms/${subjectId}`)
         mainForm.value = res.data.value as FormSubjectResponse[]
     } catch (err) {
         console.error('Get Project failed:', err)

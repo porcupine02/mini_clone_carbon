@@ -97,7 +97,6 @@ const findIdFormSubjectLink = (subj_id: number, form_id: number): number => {
 }
 
 const toggleMain = async (form_id: number) => {
-    console.log('toggle')
     const formSubjId = findIdFormSubjectLink(selectedSubjectId.value ?? 0, form_id)
     const isCurrentlyMain = mainFormIds.value.includes(form_id)
     const payload = {
@@ -114,7 +113,6 @@ const toggleMain = async (form_id: number) => {
     mainFormIds.value = listLink.value
         .filter(link => link.subject === selectedSubjectId.value && link.main)
         .map(link => link.form)
-    console.log('toggle done!')
 
 }
 

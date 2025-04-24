@@ -83,17 +83,6 @@ onMounted(async () => {
   })
   teachers.value = res.data.value as User[]
 
-  // TODO: Get main form of subject
-  //   accessToken.value = localStorage.getItem('access_token') || ''
-  //   console.log('assecc ', accessToken)
-  //   // Fetch subjects from backend
-  //   subjects.value = await useFetch(`http://localhost:8000/form/subject`, {
-  //     method: 'GET',
-  //     headers: {
-  //       Authorization: `Bearer ${accessToken.value}`
-  //     }
-
-  //   })
 })
 
 const submitForm = async () => {
@@ -112,8 +101,6 @@ const submitForm = async () => {
   }
 
   try {
-    console.log('payload', JSON.stringify(payload))
-    console.log('accessToken', auth.accessToken)
     const res = await useFetch<CreateProjectResponse>(`http://localhost:8000/project/`, {
       method: 'POST',
       body: payload,
@@ -122,9 +109,6 @@ const submitForm = async () => {
       }
 
     })
-
-    console.log('res', JSON.stringify(res))
-    console.log("res.data.value?.id", res.data.value?.id);
     if (auth.user && auth.accessToken && auth.refreshToken) {
       auth.setUser(
         auth.user,
@@ -135,7 +119,6 @@ const submitForm = async () => {
       )
 
     }
-    console.log("subjectId", res.data.value?.student_detail.id)
     navigateTo(`/`)
   } catch (err) {
     console.error('Project creation failed:', err)

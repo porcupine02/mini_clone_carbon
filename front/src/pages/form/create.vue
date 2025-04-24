@@ -31,8 +31,6 @@ onMounted(async () => {
     const rawUser = localStorage.getItem('user')
     user.value = rawUser ? JSON.parse(rawUser) : null
 
-    console.log('user.value', user.value)
-    console.log('user.value.id', user.value?.id)
 })
 const submitForm = async () => {
     try {
@@ -48,8 +46,6 @@ const submitForm = async () => {
             updated_by: auth.user?.id,
         }
 
-        console.log('payload', payload)
-        console.log('fields', fields)
         const { data, error } = await useFetch('http://localhost:8000/form/with-fields', {
             method: 'POST',
             body: payload,
@@ -58,11 +54,6 @@ const submitForm = async () => {
             }
         })
 
-        if (error.value) {
-            console.error('Submission failed:', error.value)
-        } else {
-            console.log('Form submitted:', data.value)
-        }
         alert("Create form success.")
     } catch (err) {
         console.error('Error submitting form:', err)

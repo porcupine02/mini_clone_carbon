@@ -51,16 +51,13 @@ definePageMeta({
 const handleLogin = async (e: Event) => {
 
   e.preventDefault()
-  console.log('handle Login')
   const credentials = {
     username: username.value,
     password: password.value
   }
 
-  console.log('credentials', credentials)
   const result = await login(credentials)
 
-  console.log('result', result)
 
   // Check if login was successful
   if (result.success) {

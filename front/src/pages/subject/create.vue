@@ -36,8 +36,6 @@ onMounted(async () => {
     const rawUser = localStorage.getItem('user')
     user.value = rawUser ? JSON.parse(rawUser) : null
 
-    console.log('user.value', user.value)
-    console.log('user.value.id', user.value?.id)
 })
 
 const submitSubject = async () => {

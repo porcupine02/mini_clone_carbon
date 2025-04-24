@@ -175,8 +175,6 @@ const getMainForm = async () => {
         Authorization: `Bearer ${auth.accessToken}`
       }
     })
-    // console.log('res', res.data.value)
-    // console.log('path', `http://localhost:8000/form/main-forms/${subjectId}`)
     mainForm.value = res.data.value as FormSubjectResponse[]
   } catch (err) {
     console.error('Get Project failed:', err)
@@ -191,13 +189,9 @@ const getFormOfSubject = async () => {
         Authorization: `Bearer ${auth.accessToken}`
       }
     })
-    // console.log('res', res.data.value)
     listOfForm.value = res.data.value as FormResponse[]
-    console.log('listOfForm', listOfForm)
-    console.log('res.data.value', res.data.value)
   } catch (err) {
     console.error('Get Project failed:', err)
-    // alert('Get Project failed')
   }
 }
 const getFieldAnswer = (
@@ -228,8 +222,6 @@ const getAuth = async () => {
 
 onMounted(async () => {
   await getAuth();
-  console.log("auth.ownSubject", auth.ownSubject)
-  console.log("auth.ownProject", auth.ownProject)
   await getAllSubjects()
 
   if (auth.ownSubject || auth.ownProject) {

@@ -44,7 +44,6 @@ const handleSubmit = async () => {
             updated_by_id: user.value?.id ?? null,
         }
 
-        console.log('payload', payload)
 
         await useFetch(`http://localhost:8000/project/submission/${formId}/assign`, {
             method: 'POST',

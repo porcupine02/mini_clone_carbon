@@ -77,11 +77,8 @@ const getAuth = async () => {
 
 watch(selectedSubject, async(newValue, oldValue) => {
     if (newValue) {
-        console.log('Subject selected:', newValue);
         await getFormBySubject(newValue.id);
         await getAllProjectBySubject()
-    } else {
-        console.log('No subject selected');
     }
 });
 const getFormBySubject = async (projectId: number) => {

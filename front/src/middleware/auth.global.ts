@@ -20,8 +20,6 @@ export default defineNuxtRouteMiddleware((to, from) => {
 
   const role = auth.user?.role;
 
-  console.log("to", to.path);
-  console.log("role", role);
 
   const isAdminOnly =
     adminPages.includes(to.path) && !teacherPages.includes(to.path);

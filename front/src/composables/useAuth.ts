@@ -10,7 +10,6 @@ export const useAuth = () => {
       })) as responseLogin;
 
       const auth = useAuthStore();
-      console.log('auth', response)
 
       auth.setUser(
         response.user,
