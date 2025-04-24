@@ -10,7 +10,6 @@ from django.db.models import Count
 class CreateFormAndFormFields(APIView):
     permission_classes = [IsAuthenticated]
     def post(self, request):
-        print('test jss')
         form_data = request.data.get('form')
         fields_data = request.data.get('fields', [])
 
@@ -100,7 +99,6 @@ class LinkFormToSubjectView(APIView):
 
         if not isinstance(form_ids, list):
 
-            print('test1')
             return Response({"error": "form_ids must be a list"}, status=status.HTTP_400_BAD_REQUEST)
 
         forms = Forms.objects.filter(id__in=form_ids)
@@ -159,7 +157,6 @@ class FormsSubjectView(ListCreateAPIView):
     
     
 class MainFormBySubjectView(ListAPIView):
-    print('test')
     serializer_class = FormsSubjectDetailSerializer
     permission_classes = [IsAuthenticated]
 

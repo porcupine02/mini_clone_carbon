@@ -103,7 +103,6 @@ class AssignSubmissionView(APIView):
                 form_field = FormFields.objects.get(pk=response['form_field'])
             except FormFields.DoesNotExist:
                 return Response({"detail": f"Form field '{response['form_field']}' not found."}, status=status.HTTP_400_BAD_REQUEST)
-            print(f"User ID: {user.id}, User: {user}")
             try:
                 field_response = FormFieldResponse.objects.get(
                     form_submission=submission, form_field=form_field
