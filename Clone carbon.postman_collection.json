@@ -1,0 +1,301 @@
+{
+	"info": {
+		"_postman_id": "05e87c61-46d9-4c80-9402-308f8bcd9caa",
+		"name": "Clone carbon",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "28588111"
+	},
+	"item": [
+		{
+			"name": "login",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "username",
+							"value": "teacher1",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "Admin@1234",
+							"type": "text"
+						}
+					]
+				},
+				"url": "http://localhost:8000/auth/login/"
+			},
+			"response": []
+		},
+		{
+			"name": "create subject",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{access_token}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"Project 1 - 2025 Corse\",\n    \"description\": \"\",\n    \"created_by\": 6,\n    \"updated_by\": 6\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:8000/form/subject"
+			},
+			"response": []
+		},
+		{
+			"name": "update subject Copy",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{access_token}}"
+					}
+				},
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"Project 2 - 2025 Corse\",\n    \"description\": \"asdf\",\n    \"updated_by\": 6\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:8000/form/subject/4"
+			},
+			"response": []
+		},
+		{
+			"name": "update subject",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{access_token}}"
+					}
+				},
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:8000/form/subject/3"
+			},
+			"response": []
+		},
+		{
+			"name": "create form - include field",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{access_token}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"form\": {\n        \"title\": \"zxcv\",\n        \"description\": \"zxcv\",\n        \"created_by\": 9,\n        \"updated_by\": 9\n    },\n    \"fields\": [\n        {\n            \"label\": \"adsf\",\n            \"type\": \"text\",\n            \"optionsRaw\": \"\"\n        }\n    ],\n    \"created_by\": 9,\n    \"updated_by\": 9\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:8000/form/with-fields"
+			},
+			"response": []
+		},
+		{
+			"name": "update form",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{access_token}}"
+					}
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"title\": \"update\",\n    \"fields\": [\n        {\n            \"id\": 6,\n            \"form\": 9,\n            \"label\": \"input 1\",\n            \"type\": \"text\",\n            \"optionRaw\": null,\n            \"created_at\": \"2025-04-24\",\n            \"updated_at\": \"2025-04-24\",\n            \"created_by\": null,\n            \"updated_by\": null\n        }\n    ]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:8000/form/9"
+			},
+			"response": []
+		},
+		{
+			"name": "create project",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{access_token}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"title_th\": \"Project1 of student 1\",\n    \"title_en\": \"Project1 of student 1\",\n    \"keyword\": [\n        \"sdf\",\n        \"asdf\"\n    ],\n    \"subject\": 1,\n    \"student\": 2,\n    \"teacher\": 8,\n    \"created_by\": 1,\n    \"updated_by\": 1\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:8000/project/"
+			},
+			"response": []
+		},
+		{
+			"name": "submit/update form",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{access_token}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"project_id\": 11,\n    \"fieldsResponse\": [\n        {\n            \"form_field\": 6,\n            \"value\": \"field 1\",\n            \"file\": null\n        }\n    ],\n    \"created_by_id\": 1,\n    \"updated_by_id\": 1\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:8000/project/submission/9/assign"
+			},
+			"response": []
+		},
+		{
+			"name": "link form subject - 1 form",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{access_token}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"subject_id\": 1,\n    \"form_id\": 9\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:8000/form/link-form-subject"
+			},
+			"response": []
+		},
+		{
+			"name": "link form subject - List",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{access_token}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"form_ids\": [\n        9\n    ]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:8000/form/subject/1/add-forms"
+			},
+			"response": []
+		},
+		{
+			"name": "unlink form subject",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{access_token}}"
+					}
+				},
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"form_ids\": [\n        10\n    ]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:8000/form/subject/1/add-forms"
+			},
+			"response": []
+		},
+		{
+			"name": "approve submission",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{access_token}}"
+					}
+				},
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"status\": \"Pending\",\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:8000/project/submission/10"
+			},
+			"response": []
+		}
+	]
+}

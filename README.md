@@ -18,6 +18,7 @@ cd mini_clone_carbon
 -   `python manage.py migrate`
 -   `python3 manage.py runserver`
 
+Note : postman file version 2.0
 
 ### 3. Set frontend 
 -   Go to frontend folder : `cd front`
