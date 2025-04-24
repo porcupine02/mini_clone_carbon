@@ -1,6 +1,6 @@
 from rest_framework import status
 from .models import Forms, FormFields, Subject, FormSubject
-from .serializers import FormsSerializer, FormsFieldsSerializer, SubjectSerializer, FormDetailSerializer, FormsSubjectSerializer, FormsSubjectDetailSerializer
+from .serializers import FormsSerializer, FormsFieldsSerializer, FormsSubjectLinkSerializer, SubjectSerializer, FormDetailSerializer, FormsSubjectSerializer, FormsSubjectDetailSerializer
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView, ListAPIView
 from rest_framework.views import APIView
@@ -143,8 +143,10 @@ class AddMainFormByIdView(RetrieveUpdateDestroyAPIView):
 
 class FormsSubjectView(ListCreateAPIView):
     queryset = FormSubject.objects.all()
-    serializer_class = FormsSubjectSerializer
+    serializer_class = FormsSubjectLinkSerializer
     permission_classes = [IsAuthenticated]
+
+
     
 # class FormsSubjectBySubjIdView(ListCreateAPIView):
 #     # Get Form for display main : field response

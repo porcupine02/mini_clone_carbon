@@ -11,13 +11,33 @@ User = get_user_model()
 
 
 class ProjectSerializer(serializers.ModelSerializer):
-    subject = SubjectSerializer(read_only=True)
-    # student = UserSerializer(read_only=True)
+
     subject = serializers.PrimaryKeyRelatedField(queryset=Subject.objects.all())
     student = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
+    teacher = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), required=False)
+    created_by = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), required=False)
+    updated_by = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), required=False)
+
+    # Use nested serializers for GET (list/detail)
+    subject_detail = SubjectSerializer(source='subject', read_only=True)
+    student_detail = UserSerializer(source='student', read_only=True)
+    # teacher_detail = UserSerializer(source='teacher', read_only=True)
+    # created_by_detail = UserSerializer(source='created_by', read_only=True)
+    # updated_by_detail = UserSerializer(source='updated_by', read_only=True)
     class Meta:
         model = Project
         fields = '__all__'
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        
+        if self.context.get('request') and self.context['request'].method == 'GET':
+            representation.pop('subject')
+            representation.pop('student')
+            representation.pop('teacher')
+            representation.pop('created_by')
+            representation.pop('updated_by')
+            
+        return representation
 
 class FormFieldResponseSerializer(serializers.ModelSerializer):
     form_field = FormsFieldsSerializer(read_only=True)  

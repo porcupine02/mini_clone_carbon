@@ -1,6 +1,8 @@
 export interface userLogin {
+  id: number;
   username: string;
   email: string;
+  role: string;
 }
 export interface responseLogin {
   refresh: string;

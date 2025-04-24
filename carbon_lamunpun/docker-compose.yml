@@ -1,0 +1,17 @@
+version: '3.8'
+services:
+  database:
+    image: postgres:16.2-bullseye
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - TZ=Asia/Bangkok
+    ports:
+      - '5432:5432'
+    volumes: 
+      - ./postgre:/var/lib/postgresql/data
+
+
+volumes:
+  postgres-data:

@@ -62,6 +62,7 @@ import type { ProjectResponse, FormResponse, FormSubmission } from '@/types/inte
 
 const route = useRoute()
 const router = useRouter()
+const auth = useAuthStore()
 
 const projectId = route.params.proj_id
 const subjectId = route.params.subj_id
@@ -98,7 +99,7 @@ const getProject = async () => {
 
 const getFormOfSubject = async () => {
     try {
-        const res = await useFetch(`http://localhost:8000/form/subject/${project.value?.subject.id}/all-forms`, {
+        const res = await useFetch(`http://localhost:8000/form/subject/${auth.ownSubject}/all-forms`, {
             method: 'GET',
             headers: {
                 Authorization: `Bearer ${accessToken.value}`
@@ -195,7 +196,7 @@ interface FormSubjectResponse {
     field_responses: FormFieldSubmit[];
 }
 
-export interface FormFieldSubmit {
+interface FormFieldSubmit {
     id: number;
     form_submission: number;
     form_field: number;

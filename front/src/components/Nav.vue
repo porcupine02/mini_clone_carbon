@@ -5,9 +5,13 @@
       <div class="text-xl font-bold text-gray-800">
         <NuxtLink to="/">MyLogo</NuxtLink>
       </div>
-      <div class="text-xl font-bold text-gray-800">
+      <div v-if="auth.user?.role == 'Admin'" class="text-xl font-bold text-gray-800">
         <NuxtLink to="/subject/create">Create Subject</NuxtLink>
       </div>
+      <div v-if="['Admin', 'Teacher'].includes(auth.user?.role ?? '')" class="text-xl font-bold text-gray-800">
+        <NuxtLink to="/form/create">Create Form</NuxtLink>
+      </div>
+
 
     </div>
 
@@ -41,8 +45,15 @@ const loggedIn = ref(false)
 const user = ref<Record<string, any> | null>(null)
 
 const router = useRouter()
+const auth = useAuthStore()
 
-onMounted(() => {
+
+const getAuth = async () => {
+  auth.loadFromCookies()
+}
+onMounted(async () => {
+
+  await getAuth();
   const access_token = useCookie('access_token').value
   const user_cookie = useCookie('user').value
   if (access_token && user_cookie) {

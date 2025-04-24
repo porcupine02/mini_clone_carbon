@@ -64,10 +64,10 @@ const handleLogin = async (e: Event) => {
 
   // Check if login was successful
   if (result.success) {
-    navigateTo('/') // Redirect to the dashboard or home page
+    navigateTo('/')
   } else {
     // Handle error (you could show an error message)
-    alert('Login failed. Please check your credentials.')
+    alert('Login failed. User or Password incorrect.')
   }
 }
 </script>

@@ -9,7 +9,7 @@ class Forms(models.Model):
     # id = models.IntegerField(max_length=5)
     # name = models.CharField(max_length=200)
     title = models.CharField(max_length=200)
-    description = models.CharField(max_length=500)
+    description = models.CharField(max_length=500, blank=True)
     main = models.IntegerField(blank=True, null=True)
     # subjects = models.ManyToManyField('Subject', related_name='forms', blank=True)
     subjects = models.ManyToManyField('Subject', through='FormSubject', related_name='forms', blank=True)
@@ -39,7 +39,7 @@ class FormFields(models.Model):
 
 class Subject(models.Model):
     name = models.CharField(max_length=200)
-    description = models.CharField(max_length=500)
+    description = models.CharField(max_length=500, blank=True, null=True)
     # forms = models.ManyToManyField('Forms', related_name='subjects')
     created_by = models.ForeignKey(User, related_name='subject_created', on_delete=models.CASCADE, null=True)
     created_at = models.DateField(auto_now_add=True)

@@ -15,6 +15,9 @@ urlpatterns = [
     path('subject/<int:subject_id>/all-forms', FormsBySubjectView.as_view(), name='get_form_by_subject'), # Get Form by subject
 
     path('with-fields', CreateFormAndFormFields.as_view(), name='form_with_fields'),
+    # add update and delete
+
+
     path('subject/<int:subject_id>/add-forms', LinkFormToSubjectView.as_view(), name='link_form_subject'),
     path('add-main/<int:pk>', AddMainFormByIdView.as_view(), name='set_main_form_subject'),
     path('link-form-subject', FormsSubjectView.as_view(), name='form_subject'),

@@ -9,14 +9,16 @@ User = get_user_model()
 class Project(models.Model):
     title_th = models.CharField(max_length=200)
     title_en = models.CharField(max_length=200)
-    keyword = models.JSONField() # List of VARCHAR(20)
+    keyword = models.JSONField()  # List of VARCHAR(20)
+    
     subject = models.ForeignKey(Subject, on_delete=models.CASCADE)
     student = models.OneToOneField(User, on_delete=models.CASCADE)
     teacher = models.ForeignKey(User, related_name='teacher_project', on_delete=models.CASCADE, null=True, blank=True)
+    
     created_by = models.ForeignKey(User, related_name='project_created', on_delete=models.CASCADE, null=True)
+    updated_by = models.ForeignKey(User, related_name='project_updated', on_delete=models.CASCADE, null=True)
     created_at = models.DateField(auto_now_add=True)
     updated_at = models.DateField(auto_now=True)
-    updated_by = models.ForeignKey(User, related_name='project_updated', on_delete=models.CASCADE, null=True)
 
 class FormSubmission(models.Model):
     STATUS_CHOICES = [

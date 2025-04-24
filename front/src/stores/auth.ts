@@ -1,8 +1,9 @@
 import { defineStore } from "pinia";
+import type { responseLogin } from "../types/authInterface";
 
 export const useAuthStore = defineStore("auth", {
   state: () => ({
-    user: null as Record<string, any> | null,
+    user: null as responseLogin["user"] | null,
     accessToken: useCookie("access_token").value,
     refreshToken: useCookie("refresh_token").value,
     ownProject: useCookie("own_project").value || "",
@@ -35,7 +36,7 @@ export const useAuthStore = defineStore("auth", {
     },
 
     setUser(
-      user: Record<string, any>,
+      user: responseLogin["user"],
       accessToken: string,
       refreshToken: string,
       ownProject: string | number | null,

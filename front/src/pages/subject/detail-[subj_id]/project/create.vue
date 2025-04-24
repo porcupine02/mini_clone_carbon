@@ -42,16 +42,19 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
-import type { ProjectResponse } from '~/src/types/interface';
-import type { User } from '~/src/types/authInterface';
+import type { CreateProjectResponse, ProjectResponse } from '~/src/types/interface';
+import type { User, userLogin } from '~/src/types/authInterface';
 
 const route = useRoute()
-const user = ref()
+// const user = ref()
+
+const user = ref<userLogin | null>(null)
+const auth = useAuthStore()
 
 const teachers = ref<User[]>([])
 
 
-const accessToken = ref('')
+// const accessToken = ref('')
 // Form state
 const form = ref({
   title_th: '',
@@ -62,9 +65,12 @@ const form = ref({
 
 
 const getAuth = async () => {
-  accessToken.value = localStorage.getItem('access_token') ?? ''
-  const rawUser = localStorage.getItem('user')
-  user.value = rawUser ? JSON.parse(rawUser) : null
+  // accessToken.value = localStorage.getItem('access_token') ?? ''
+  // const rawUser = localStorage.getItem('user')
+  // user.value = rawUser ? JSON.parse(rawUser) : null
+
+  auth.loadFromCookies()
+
 }
 onMounted(async () => {
 
@@ -72,7 +78,7 @@ onMounted(async () => {
   const res = await useFetch(`http://localhost:8000/auth/teachers`, {
     method: 'GET',
     headers: {
-      Authorization: `Bearer ${accessToken.value}`
+      Authorization: `Bearer ${auth.accessToken}`
     }
   })
   teachers.value = res.data.value as User[]
@@ -98,28 +104,39 @@ const submitForm = async () => {
       .split(',')
       .map((kw) => kw.trim())
       .filter(Boolean),
-    subject: route.params.subj_id,
-    student: user.value.id,
+    subject: Number(route.params.subj_id[0]),
+    student: auth.user?.id,
     teacher: form.value.teacher,
-    created_by: user.value.id,
-    updated_by: user.value.id,
+    created_by: auth.user?.id,
+    updated_by: auth.user?.id,
   }
 
   try {
-    console.log('payload', payload)
-    const accessToken = localStorage.getItem('access_token')
-
-    console.log('accessToken', accessToken)
-    const res = await useFetch<ProjectResponse>(`http://localhost:8000/project/`, {
+    console.log('payload', JSON.stringify(payload))
+    console.log('accessToken', auth.accessToken)
+    const res = await useFetch<CreateProjectResponse>(`http://localhost:8000/project/`, {
       method: 'POST',
       body: payload,
       headers: {
-        Authorization: `Bearer ${accessToken}`
+        Authorization: `Bearer ${auth.accessToken}`,
       }
 
     })
-    // console.log("res", res.data.value?.id)
-    navigateTo(`/subject/detail-${res.data.value?.subject}/project/${res.data.value?.id}`)
+
+    console.log('res', JSON.stringify(res))
+    console.log("res.data.value?.id", res.data.value?.id);
+    if (auth.user && auth.accessToken && auth.refreshToken) {
+      auth.setUser(
+        auth.user,
+        auth.accessToken,
+        auth.refreshToken,
+        res.data.value?.id ?? null,
+        res.data.value?.subject_detail.id ?? null
+      )
+
+    }
+    console.log("subjectId", res.data.value?.student_detail.id)
+    navigateTo(`/`)
   } catch (err) {
     console.error('Project creation failed:', err)
     alert('Project creation failed')

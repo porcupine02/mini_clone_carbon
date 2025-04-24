@@ -46,6 +46,19 @@ export interface ProjectResponse {
   updated_by: number;
 }
 
+export interface CreateProjectResponse {
+  id: number;
+  title_th: string;
+  title_en: string;
+  keyword: string[];
+  created_at: string;
+  updated_at: string;
+  subject_detail: SubjectResponse;
+  student_detail: User;
+  created_by: number;
+  updated_by: number;
+}
+
 export interface UserResponse {
   id: number;
   username: string;

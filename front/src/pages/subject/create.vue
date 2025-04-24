@@ -13,10 +13,6 @@
                 </button>
             </div>
         </form>
-
-        <h1 class="text-5xl">
-            Link main form to subject
-        </h1>
     </div>
 </template>
   

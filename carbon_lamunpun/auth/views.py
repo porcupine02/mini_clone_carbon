@@ -38,13 +38,22 @@ class LoginView(APIView):
 
             subject = Subject.objects.filter(created_by=user).first()
             project = Project.objects.filter(created_by=user).first()
+
+            role = None
+            if user.groups.filter(name="Teacher").exists():
+                role = "Teacher"
+            elif user.groups.filter(name="Student").exists():
+                role = "Student"
+            else:
+                role = "Admin" 
             return Response({
                 'refresh': str(refresh),
                 'access': str(refresh.access_token),
                 'user': {
                     'id': user.id,
                     'username': user.username,
-                    'email': user.email
+                    'email': user.email,
+                    'role': role,
                 },
                 'own_subject': subject.id if subject else None,
                 'own_project': project.id if project else None

@@ -1,5 +1,5 @@
 <template>
-    <div class="flex flex-col min-w-screen min-h-screen bg-gray-800">
+    <div class="flex flex-col min-w-screen min-h-screen">
         <Nav :loggedIn="false"></Nav>
         <div class="px-6 pt-6 items-center">
             <NuxtPage class="content-slot" />
@@ -8,5 +8,9 @@
 </template>
   
 <script lang="ts" setup>
+
+// definePageMeta({
+//   middleware: 'auth'
+// })
 </script>
   

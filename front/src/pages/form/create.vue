@@ -20,8 +20,13 @@ const description = ref("")
 const fields = ref([])
 const user = ref()
 const accessToken = ref()
+const auth = useAuthStore()
 
+const getAuth = async () => {
+    auth.loadFromCookies()
+}
 onMounted(async () => {
+    await getAuth()
     accessToken.value = localStorage.getItem('access_token')
     const rawUser = localStorage.getItem('user')
     user.value = rawUser ? JSON.parse(rawUser) : null
@@ -35,8 +40,12 @@ const submitForm = async () => {
             form: {
                 title: title.value,
                 description: description.value,
+                created_by: auth.user?.id,
+                updated_by: auth.user?.id,
             },
             fields: fields.value,
+            created_by: auth.user?.id,
+            updated_by: auth.user?.id,
         }
 
         console.log('payload', payload)
@@ -54,6 +63,7 @@ const submitForm = async () => {
         } else {
             console.log('Form submitted:', data.value)
         }
+        alert("Create form success.")
     } catch (err) {
         console.error('Error submitting form:', err)
     }
