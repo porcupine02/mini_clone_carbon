@@ -28,13 +28,17 @@ const subject = ref({
 })
 
 
-const user = ref()
-const accessToken = ref()
+// const user = ref()
+// const accessToken = ref()
 
+const auth = useAuthStore()
+
+const getAuth = async () => {
+    auth.loadFromCookies()
+}
 onMounted(async () => {
-    accessToken.value = localStorage.getItem('access_token')
-    const rawUser = localStorage.getItem('user')
-    user.value = rawUser ? JSON.parse(rawUser) : null
+
+    await getAuth();
 
 })
 
@@ -42,21 +46,23 @@ const submitSubject = async () => {
     try {
         const payload = {
             ...subject.value,
-            created_by: user.value.id,
-            updated_by: user.value.id,
+            created_by: auth.user?.id,
+            updated_by: auth.user?.id,
         }
+        console.log('payload', payload)
+        console.log('accessToken', auth.accessToken)
         const res = await useFetch('http://localhost:8000/form/subject', {
             method: 'POST',
             body: payload,
             headers: {
-                Authorization: `Bearer ${accessToken.value}`
+                Authorization: `Bearer ${auth.accessToken}`
             }
         })
         if (res.error.value?.message) {
             throw new Error(res.error.value?.message);
         }
         alert('Subject created successfully!')
-        // router.push('/admin/subjects') // redirect if needed
+        // router.push('/admin/subjects')
     } catch (error) {
         console.error(error)
         alert('Failed to create subject.')

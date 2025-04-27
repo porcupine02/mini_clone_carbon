@@ -13,15 +13,15 @@
             <p>จำนวนโปรเจ็คทั้งหมด: <strong>{{ projectCount }}</strong> คน</p>
         </div>
 
-        <BarChart :chart-data="chartData" :key="chartData"/>
+        <BarChart :chart-data="chartData" :key="chartData" />
 
-        <div class="flex items-end space-x-4 my-4">
-            <!-- Form -->
+        <!-- Form  TODO-->
+        <!-- <div class="flex items-end space-x-4 my-4">
             <h2>Form</h2>
             <select v-model="selectedForm" class="border px-3 py-2 rounded">
                 <option v-for="form in forms" :key="form.id" :value="form">{{ form.title }}</option>
             </select>
-        </div>
+        </div> -->
 
         <div class="mt-8">
             <h3 class="text-lg font-semibold mb-2">Form in {{ selectedSubject?.name }}</h3>
@@ -69,13 +69,12 @@ const chartData = ref<chartType>({
     ],
 })
 
+const auth = useAuthStore()
 const getAuth = async () => {
-    accessToken.value = localStorage.getItem('access_token') ?? ''
-    const rawUser = localStorage.getItem('user')
-    user.value = rawUser ? JSON.parse(rawUser) : null
+    auth.loadFromCookies()
 }
 
-watch(selectedSubject, async(newValue, oldValue) => {
+watch(selectedSubject, async (newValue, oldValue) => {
     if (newValue) {
         await getFormBySubject(newValue.id);
         await getAllProjectBySubject()
@@ -88,7 +87,7 @@ const getFormBySubject = async (projectId: number) => {
             {
                 method: 'GET',
                 headers: {
-                    Authorization: `Bearer ${accessToken.value}`,
+                    Authorization: `Bearer ${auth.accessToken}`,
                 },
             }
         )
@@ -108,7 +107,7 @@ const getAllSubjects = async () => {
             {
                 method: 'GET',
                 headers: {
-                    Authorization: `Bearer ${accessToken.value}`,
+                    Authorization: `Bearer ${auth.accessToken}`,
                 },
             }
         )
@@ -124,13 +123,12 @@ const getAllProjectBySubject = async () => {
             {
                 method: 'GET',
                 headers: {
-                    Authorization: `Bearer ${accessToken.value}`,
+                    Authorization: `Bearer ${auth.accessToken}`,
                 },
             }
         )
         const proj = res.data.value ?? []
         projectCount.value = proj.length
-        console.log('coun', projectCount.value)
     } catch (error) {
         console.error('Request failed:', error);
     }
@@ -143,7 +141,7 @@ const getAllProjectBySubject = async () => {
 //             {
 //                 method: 'GET',
 //                 headers: {
-//                     Authorization: `Bearer ${accessToken.value}`,
+//                     Authorization: `Bearer ${auth.accessToken}`,
 //                 },
 //             }
 //         )
@@ -155,8 +153,6 @@ const getAllProjectBySubject = async () => {
 // }
 
 const updateChartData = (forms: FormResponse[]) => {
-    // chartData.value.labels = forms.map(form => form.title);
-    // chartData.value.datasets[0].data = forms.map(form => form.submissions_count);
     chartData.value = {
         labels: forms.map(form => form.title),
         datasets: [
@@ -208,23 +204,23 @@ interface chartType {
     }[]
 }
 type Project = {
-  id: number;
-  subject: {
     id: number;
-    name: string;
-    forms: {
-      id: number;
-      title: string;
-      description: string;
-    }[];
-  };
-  student: {
-    id: number;
-    username: string;
-  };
-  title_th: string;
-  title_en: string;
-  keyword: string[];
+    subject: {
+        id: number;
+        name: string;
+        forms: {
+            id: number;
+            title: string;
+            description: string;
+        }[];
+    };
+    student: {
+        id: number;
+        username: string;
+    };
+    title_th: string;
+    title_en: string;
+    keyword: string[];
 };
 
 </script>

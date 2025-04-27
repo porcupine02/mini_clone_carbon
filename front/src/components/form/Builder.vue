@@ -28,7 +28,7 @@
           </select>
 
           <div v-if="field.type === 'select'">
-            <input v-model="field.optionsRaw" placeholder="Options (comma separated)" class="w-full p-2 border rounded" />
+            <input v-model="field.optionRaw" placeholder="Options (comma separated)" class="w-full p-2 border rounded" />
           </div>
 
           <button @click="removeField(index)" class="text-red-500">Remove</button>
@@ -61,7 +61,7 @@ const addField = () => {
   fields.value.push({
     label: '',
     type: 'text',
-    optionsRaw: ''
+    optionRaw: ''
   })
 }
 
@@ -71,7 +71,7 @@ const removeField = (index: number) => {
 
 const getOptions = (field: any) => {
 
-  return field.optionsRaw?.split(',')
+  return field.optionRaw?.split(',')
     .map((opt: string) => opt.trim())
     .filter((opt: string) => opt.length > 0)
     .map((opt: string) => ({ label: opt, value: opt })) || []

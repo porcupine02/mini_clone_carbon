@@ -1,6 +1,6 @@
 <template>
     <div>
-        <h2>Project detail - Preview</h2>
+        <!-- <h2>Project detail - Preview</h2> -->
         <FormBase class="space-y-4 mt-2" :title="form?.title" :description="form?.description">
             <div v-for="(field, index) in form?.fields" :key="'preview-' + index">
                 <label class="block font-medium mb-1">{{ field.label }}</label>
@@ -21,6 +21,8 @@ const formId = route.params.form_id
 const user = ref()
 const accessToken = ref()
 const form = ref<FormResponse>()
+const auth = useAuthStore()
+
 
 
 interface FormFieldResponse {
@@ -56,7 +58,7 @@ const getAllSubjects = async () => {
             {
                 method: 'GET',
                 headers: {
-                    Authorization: `Bearer ${accessToken.value}`,
+                    Authorization: `Bearer ${auth.accessToken}`,
                 },
             }
         )
@@ -67,11 +69,8 @@ const getAllSubjects = async () => {
     }
 }
 
-
 const getAuth = async () => {
-    accessToken.value = localStorage.getItem('access_token') ?? ''
-    const rawUser = localStorage.getItem('user')
-    user.value = rawUser ? JSON.parse(rawUser) : null
+    auth.loadFromCookies()
 }
 
 onMounted(async () => {
@@ -82,12 +81,15 @@ onMounted(async () => {
 
 
 const getOptions = (field: any) => {
-    // return field.optionsRaw?.split(',').map((item: string) => item.trim()) || []
+    // return field.optionRaw?.split(',').map((item: string) => item.trim()) || []
 
-    return field.optionsRaw?.split(',')
+    return field.optionRaw?.split(',')
         .map((opt: string) => opt.trim())
         .filter((opt: string) => opt.length > 0)
         .map((opt: string) => ({ label: opt, value: opt })) || []
 }
 
+// const isImage = (url: string) => {
+//     return ['.jpg', '.jpeg', '.png', '.gif', '.bmp'].some(ext => url.endsWith(ext));
+// }
 </script>

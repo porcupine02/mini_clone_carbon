@@ -11,6 +11,9 @@ export const useAuth = () => {
 
       const auth = useAuthStore();
 
+      console.log("response", response);
+      console.log("auth", auth.accessToken);
+      console.log("user", auth.user);
       auth.setUser(
         response.user,
         response.access,
@@ -19,6 +22,8 @@ export const useAuth = () => {
         response.own_subject
       );
 
+      console.log("auth", auth.accessToken);
+      console.log("user", auth.user);
       return { success: true };
     } catch (error) {
       console.error("Login failed", error);

@@ -16,6 +16,7 @@ cd mini_clone_carbon
 - Set reuirements : `pip install -r requirements.txt`
 - `python manage.py makemigrations`
 - `python manage.py migrate`
+- `python manage.py seed`
 - `python3 manage.py runserver`
 
 Note : postman file version 2.0

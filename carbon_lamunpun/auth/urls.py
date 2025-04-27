@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import LogoutView, RegisterView, LoginView, TeacherView, TestView
+from .views import LogoutView, RegisterView, LoginView, TeacherView, RoleListView, TestView
 from rest_framework.authtoken.views import obtain_auth_token
 
 urlpatterns = [
@@ -7,5 +7,6 @@ urlpatterns = [
     path('login/', LoginView.as_view(), name='auth_login'),
     path('logout/', LogoutView.as_view(), name='auth_logout'),
     path('teachers/', TeacherView.as_view(), name='test'),
+    path('roles/', RoleListView.as_view(), name='role'),
     path('test/', TestView.as_view(), name='test'),
 ]

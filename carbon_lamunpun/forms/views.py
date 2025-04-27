@@ -21,7 +21,10 @@ class CreateFormAndFormFields(APIView):
             # Step 2: Create Form Fields
             created_fields = []
             for field in fields_data:
+                print('field', field)
                 field['form'] = form.id  # link to the created form
+                field['created_by'] = request.data.get('created_by')
+                field['updated_by'] = request.data.get('updated_by')
                 field_serializer = FormsFieldsSerializer(data=field)
                 if field_serializer.is_valid():
                     field_serializer.save()
@@ -32,7 +35,7 @@ class CreateFormAndFormFields(APIView):
                         "details": field_serializer.errors
                     }, status=status.HTTP_400_BAD_REQUEST)
 
-            # Step 3: Return response
+            # Step 3: Return
             return Response({
                 "form": form_serializer.data,
                 "fields": created_fields
@@ -172,6 +175,6 @@ class FormsBySubjectView(ListAPIView):
         subject_id = self.kwargs['subject_id']
         return Forms.objects.filter(subjects__id=subject_id).annotate(
             submissions_count=Count('formsubmissions')
-        )
+        ).order_by('-created_at')
     
     

@@ -1,7 +1,7 @@
 <template>
     <div class="p-4">
         <h1 class="text-xl font-bold mb-4">Link Form to Subject</h1>
-
+        <!-- Subjects -->
         <label class="block mb-2">Select Subject:</label>
         <select v-model="selectedSubjectId" class="mb-4 p-2 border rounded w-full">
             <option disabled value="">-- Choose Subject --</option>
@@ -30,6 +30,13 @@
                     :disabled="!selectedFormIds.includes(form.id)" @change="() => toggleMain(form.id)" />
                 <label :for="`main-${form.id}`" class="text-sm text-gray-600">Main</label>
             </div>
+
+            <!-- Date -->
+            <div class="col-span-5 flex items-center gap-2">
+                <input type="date" :id="`main-${form.id}`" :checked="mainFormIds.includes(form.id)"
+                    :disabled="!selectedFormIds.includes(form.id)" @change="() => toggleMain(form.id)" />
+                <label :for="`main-${form.id}`" class="text-sm text-gray-600">Main</label>
+            </div>
         </div>
 
 
@@ -40,16 +47,13 @@
 </template>
   
 <script setup lang="ts">
-const user = ref()
-const accessToken = ref()
-
+const auth = useAuthStore()
 const forms = ref<FormResponse[]>([])
 const subjects = ref<SubjectResponse[]>([])
 const selectedFormIds = ref<number[]>([])
 const preSelectedFormIds = ref<number[]>([])
 const selectedSubjectId = ref<number | null>(null)
 const listLink = ref<listLink[]>([])
-
 const mainFormIds = ref<number[]>([])
 
 
@@ -79,6 +83,8 @@ interface listLink {
     form: number;
     main: Boolean;
     subject: number;
+    starttime?: Date;
+    endtime?: Date;
 }
 const getLinkFormSubject = async () => {
     const res = await useFetch(
@@ -86,10 +92,11 @@ const getLinkFormSubject = async () => {
         {
             method: 'GET',
             headers: {
-                Authorization: `Bearer ${accessToken.value}`,
+                Authorization: `Bearer ${auth.accessToken}`,
             },
         }
     )
+    console.log(res.data.value)
     listLink.value = res.data.value as listLink[];
 }
 const findIdFormSubjectLink = (subj_id: number, form_id: number): number => {
@@ -106,7 +113,7 @@ const toggleMain = async (form_id: number) => {
         method: 'PATCH',
         body: payload,
         headers: {
-            Authorization: `Bearer ${accessToken.value}`,
+            Authorization: `Bearer ${auth.accessToken}`,
         },
     })
     await getLinkFormSubject()
@@ -120,6 +127,8 @@ const toggleMain = async (form_id: number) => {
 const unlink = async (formId: number) => {
     const payload = {
         form_ids: [formId],
+        created_by: auth.user?.id,
+        updated_by: auth.user?.id,
 
     }
     try {
@@ -127,7 +136,7 @@ const unlink = async (formId: number) => {
             method: 'DELETE',
             body: payload,
             headers: {
-                Authorization: `Bearer ${accessToken.value}`
+                Authorization: `Bearer ${auth.accessToken}`
             }
         })
         window.location.reload();
@@ -145,14 +154,16 @@ const unlink = async (formId: number) => {
 const linkFormsToSubject = async () => {
 
     const payload = {
-        form_ids: selectedFormIds.value
+        form_ids: selectedFormIds.value,
+        created_by: auth.user?.id,
+        updated_by: auth.user?.id,
     }
     try {
         const res = await useFetch(`http://localhost:8000/form/subject/${selectedSubjectId.value}/add-forms`, {
             method: 'POST',
             body: payload,
             headers: {
-                Authorization: `Bearer ${accessToken.value}`
+                Authorization: `Bearer ${auth.accessToken}`
             }
 
 
@@ -186,7 +197,7 @@ const getAllForms = async () => {
             {
                 method: 'GET',
                 headers: {
-                    Authorization: `Bearer ${accessToken.value}`,
+                    Authorization: `Bearer ${auth.accessToken}`,
                 },
             }
         )
@@ -204,7 +215,7 @@ const getAllSubjects = async () => {
             {
                 method: 'GET',
                 headers: {
-                    Authorization: `Bearer ${accessToken.value}`,
+                    Authorization: `Bearer ${auth.accessToken}`,
                 },
             }
         )
@@ -217,9 +228,7 @@ const getAllSubjects = async () => {
 
 
 const getAuth = async () => {
-    accessToken.value = localStorage.getItem('access_token') ?? ''
-    const rawUser = localStorage.getItem('user')
-    user.value = rawUser ? JSON.parse(rawUser) : null
+    auth.loadFromCookies()
 }
 
 

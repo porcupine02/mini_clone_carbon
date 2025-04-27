@@ -75,10 +75,9 @@ const user = ref()
 const accessToken = ref()
 
 
+
 const getAuth = async () => {
-    accessToken.value = localStorage.getItem('access_token') ?? ''
-    const rawUser = localStorage.getItem('user')
-    user.value = rawUser ? JSON.parse(rawUser) : null
+    auth.loadFromCookies()
 }
 
 const getProject = async () => {
@@ -86,7 +85,7 @@ const getProject = async () => {
         const res = await useFetch(`http://localhost:8000/project/${projectId}`, {
             method: 'GET',
             headers: {
-                Authorization: `Bearer ${accessToken.value}`
+                Authorization: `Bearer ${auth.accessToken}`
             }
         })
         project.value = res.data.value as ProjectResponse
@@ -101,7 +100,7 @@ const getFormOfSubject = async () => {
         const res = await useFetch(`http://localhost:8000/form/subject/${auth.ownSubject}/all-forms`, {
             method: 'GET',
             headers: {
-                Authorization: `Bearer ${accessToken.value}`
+                Authorization: `Bearer ${auth.accessToken}`
             }
         })
         listOfForm.value = res.data.value as FormResponse[]
@@ -116,7 +115,7 @@ const getMainForm = async () => {
         const res = await useFetch(`http://localhost:8000/form/main-forms/${subjectId}`, {
             method: 'GET',
             headers: {
-                Authorization: `Bearer ${accessToken.value}`
+                Authorization: `Bearer ${auth.accessToken}`
             }
         })
         mainForm.value = res.data.value as FormSubjectResponse[]

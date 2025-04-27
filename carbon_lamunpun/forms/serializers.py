@@ -2,6 +2,7 @@ from rest_framework import serializers
 from project.models import FormFieldResponse, FormSubmission
 from shared.serializers import FormSubmissionSerializer, FormFieldResponseSerializer
 from .models import Forms, FormFields, Subject, FormSubject
+from rest_framework.fields import SerializerMethodField
 
 class FormsFieldsSerializer(serializers.ModelSerializer):
     form = serializers.PrimaryKeyRelatedField(
@@ -25,10 +26,24 @@ class FormsSerializer(serializers.ModelSerializer):
     submissions_count = serializers.IntegerField(read_only=True)
     # fields = FormsFieldsSerializer(many=True, write_only=True)
     
+    starttime = SerializerMethodField()
+    endtime = SerializerMethodField()
 
     class Meta:
         model = Forms
         fields = '__all__'
+    def get_starttime(self, obj):
+        # Get the starttime from FormSubject
+        form_subject = FormSubject.objects.filter(form=obj).first()
+        if form_subject:
+            return form_subject.starttime
+        return None
+
+    def get_endtime(self, obj):
+        form_subject = FormSubject.objects.filter(form=obj).first()
+        if form_subject:
+            return form_subject.endtime
+        return None  
 
 
 class SubjectSerializer(serializers.ModelSerializer):
@@ -104,7 +119,7 @@ class FormsSubjectDetailSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = FormSubject
-        fields = ['id', 'form', 'main', 'subject', 'fieldsResponse', 'submission', 'field_responses']
+        fields = ['id', 'form', 'main', 'starttime', 'endtime','subject', 'fieldsResponse', 'submission', 'field_responses']
 
     def get_submission(self, obj):
         # submissions = FormSubmission.objects.filter(form=obj.form, subject=obj.subject)

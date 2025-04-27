@@ -49,8 +49,8 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt.token_blacklist',
     # 'account',
     'forms',
-    'project'
-
+    'project',
+    'shared'
 ]
 
 # auth
@@ -131,7 +131,7 @@ WSGI_APPLICATION = 'carbon_lamunpun.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.getenv('DB_NAME', 'test3'),
+        'NAME': os.getenv('DB_NAME', 'test4'),
         'USER': os.getenv('DB_USER', 'postgres'),
         'PASSWORD': os.getenv('DB_PASSWORD', 'postgres'),
         'HOST': os.getenv('DB_HOST', 'localhost'),
@@ -199,3 +199,6 @@ SIMPLE_JWT = {
 }
 
 
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')

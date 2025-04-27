@@ -9,7 +9,8 @@
 </template>
   
 <script setup>
-const emit = defineEmits(['update:file'])
+
+const emit = defineEmits(['update:modelValue'])
 
 defineProps({
   label: {
@@ -28,7 +29,7 @@ defineProps({
 
 function handleFileChange(event) {
   const file = event.target.files[0]
-  emit('update:file', file)
+  emit('update:modelValue', file)
 }
 </script>
   

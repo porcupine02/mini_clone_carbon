@@ -6,7 +6,7 @@ from rest_framework.authtoken.models import Token
 class RegisterSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
     password2 = serializers.CharField(write_only=True)
-    role = serializers.ChoiceField(choices=[('student', 'Student'), ('teacher', 'Teacher'), ('admin', 'Admin')], write_only=True)
+    role = serializers.ChoiceField(choices=[('Student', 'Student'), ('Teacher', 'Teacher'), ('Admin', 'Admin')], write_only=True)
 
     class Meta:
         model = User
@@ -57,10 +57,10 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = ['id', 'username', 'first_name', 'last_name', 'email']
  
-# class TeacherSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = User
-#         fields = ['id', 'first_name', 'last_name']
+class RoleListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Group
+        fields = ['id', 'name']
 
 class TestSerializer(serializers.ModelSerializer):
     class Meta:

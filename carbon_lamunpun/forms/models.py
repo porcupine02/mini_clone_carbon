@@ -50,6 +50,8 @@ class FormSubject(models.Model):
     form = models.ForeignKey('Forms', on_delete=models.CASCADE)
     subject = models.ForeignKey('Subject', on_delete=models.CASCADE)
     main = models.BooleanField(default=False)
+    starttime = models.DateField(auto_now_add=False, null=True)
+    endtime = models.DateField(auto_now_add=False, null=True)
 
     class Meta:
         unique_together = ('form', 'subject')

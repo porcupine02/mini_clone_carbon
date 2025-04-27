@@ -1,25 +1,38 @@
 <template>
     <div>
-        <h2>Project detail - Preview</h2>
+        <!-- <h2>Project detail - Preview</h2> -->
         <FormBase class="space-y-4 mt-2" :title="form?.title" :description="form?.description" @submit="handleSubmit">
+            <!-- Loop through fields to render form fields -->
             <div v-for="(field, index) in form?.fields" :key="'preview-' + index">
                 <label class="block font-medium mb-1">{{ field.label }}</label>
-                <FormTextField v-if="field.type === 'text'" v-model="assignInput[field.id].value" :edit="true" />
-                <FormSelectField v-else-if="field.type === 'select'" :options="getOptions(field.optionRaw)"
-                    v-model="assignInput[field.id].value" :edit="true" />
-                <FormFileUploadField v-else-if="field.type === 'file'" v-model="assignInput[field.id].value" :edit="true" />
+
+                <!-- Text field -->
+                <FormTextField v-if="field.type === 'text'" v-model="assignInput[field.id].value" />
+
+                <!-- Select field -->
+                <FormSelectField v-else-if="field.type === 'select'" :options="getOptions(field)"
+                    v-model="assignInput[field.id].value" />
+
+                <!-- File upload -->
+                <FormFileUploadField v-else-if="field.type === 'file'" v-model="assignInput[field.id].value" />
+
+                <div v-if="field.type === 'file' && assignInput[field.id]?.value">
+                    <!-- Render the file URL as a clickable download link -->
+                    <a :href="assignInput[field.id].value?.toString()" target="_blank" class="text-blue-500">View
+                        File</a>
+                </div>
             </div>
         </FormBase>
-
-
     </div>
 </template>
+  
 
 <script setup lang="ts">
 import { useRoute } from 'vue-router'
 import type { FormResponse, FormSubmissionPayload } from '@/types/interface'
 import type { User } from '@/types/authInterface'
 
+const auth = useAuthStore()
 const route = useRoute()
 const formId = route.params.form_id
 const projectId = route.params.proj_id
@@ -27,29 +40,39 @@ const user = ref<User>()
 const accessToken = ref()
 const preValue = ref<Boolean>(false)
 const form = ref<FormResponse>()
-const assignInput = reactive<Record<number, { value: string | File | null }>>({})
+const assignInput = reactive<Record<number, { value: string | File | null; }>>({})
 
+const editMode = ref(false);
+const ToggleEdit = (): boolean => {
+    return editMode.value = !editMode.value;
+}
 
 const handleSubmit = async () => {
     try {
 
-        const payload: FormSubmissionPayload = {
-            project_id: +projectId,
-            fieldsResponse: Object.entries(assignInput).map(([fieldId, input]) => ({
-                form_field: Number(fieldId),
-                value: typeof input.value === 'string' ? input.value : null,
-                file: input.value instanceof File ? input.value.name : null
-            })),
-            created_by_id: user.value?.id ?? null,
-            updated_by_id: user.value?.id ?? null,
-        }
+        const formData = new FormData();
+        formData.append('project_id', projectId.toString());
+        formData.append('created_by_id', auth.user?.id?.toString() ?? '');
+        formData.append('updated_by_id', auth.user?.id?.toString() ?? '');
+
+        Object.entries(assignInput).forEach(([fieldId, input], index) => {
+            formData.append(`fieldsResponse[${index}][form_field]`, fieldId);
+
+            if (input.value instanceof File) {
+                formData.append(`fieldsResponse[${index}][file]`, input.value);
+                formData.append(`fieldsResponse[${index}][value]`, '');
+            } else {
+                formData.append(`fieldsResponse[${index}][value]`, input.value ?? '');
+                formData.append(`fieldsResponse[${index}][file]`, '');
+            }
+        });
 
 
         await useFetch(`http://localhost:8000/project/submission/${formId}/assign`, {
             method: 'POST',
-            body: payload,
+            body: formData,
             headers: {
-                Authorization: `Bearer ${accessToken.value}`
+                Authorization: `Bearer ${auth.accessToken}`
             }
         })
     } catch (err) {
@@ -64,7 +87,7 @@ const getAllForms = async () => {
             {
                 method: 'GET',
                 headers: {
-                    Authorization: `Bearer ${accessToken.value}`,
+                    Authorization: `Bearer ${auth.accessToken}`,
                 },
             }
         )
@@ -85,7 +108,7 @@ const getSubmission = async () => {
         {
             method: 'GET',
             headers: {
-                Authorization: `Bearer ${accessToken.value}`,
+                Authorization: `Bearer ${auth.accessToken}`,
             },
         }
     )
@@ -94,16 +117,14 @@ const getSubmission = async () => {
         submission[0].fieldsResponse.forEach((item: FieldsResponse) => {
             if (assignInput[item.form_field.id]) {
                 preValue.value = true
-                assignInput[item.form_field.id].value = item.value;
+                assignInput[item.form_field.id].value = item.value || item.file;
             }
         })
     }
 }
 
 const getAuth = async () => {
-    accessToken.value = localStorage.getItem('access_token') ?? ''
-    const rawUser = localStorage.getItem('user')
-    user.value = rawUser ? JSON.parse(rawUser) : null
+    auth.loadFromCookies()
 }
 
 onMounted(async () => {
@@ -113,25 +134,14 @@ onMounted(async () => {
 
 })
 
-const getOptions = (optionRaw: string | string[] | null): { label: string; value: string }[] => {
-    if (typeof optionRaw === 'string') {
-        try {
-            const parsed = JSON.parse(optionRaw);
-            if (Array.isArray(parsed)) {
-                return parsed.map(opt => ({ label: opt, value: opt }));
-            }
-        } catch (e) {
-            console.error('Invalid JSON in optionRaw:', optionRaw);
-        }
-        return [];
-    }
+const getOptions = (field: any) => {
 
-    if (Array.isArray(optionRaw)) {
-        return optionRaw.map(opt => ({ label: opt, value: opt }));
-    }
-
-    return [];
+    return field.optionRaw?.split(',')
+        .map((opt: string) => opt.trim())
+        .filter((opt: string) => opt.length > 0)
+        .map((opt: string) => ({ label: opt, value: opt })) || []
 }
+
 
 interface FormField {
     id: number;

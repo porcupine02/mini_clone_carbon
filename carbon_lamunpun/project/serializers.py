@@ -21,7 +21,7 @@ class ProjectSerializer(serializers.ModelSerializer):
     # Use nested serializers for GET (list/detail)
     subject_detail = SubjectSerializer(source='subject', read_only=True)
     student_detail = UserSerializer(source='student', read_only=True)
-    # teacher_detail = UserSerializer(source='teacher', read_only=True)
+    teacher_detail = UserSerializer(source='teacher', read_only=True)
     # created_by_detail = UserSerializer(source='created_by', read_only=True)
     # updated_by_detail = UserSerializer(source='updated_by', read_only=True)
     class Meta:
@@ -41,10 +41,15 @@ class ProjectSerializer(serializers.ModelSerializer):
 
 class FormFieldResponseSerializer(serializers.ModelSerializer):
     form_field = FormsFieldsSerializer(read_only=True)  
-
+    file_url = serializers.SerializerMethodField() 
     class Meta:
         model = FormFieldResponse
         fields = '__all__'
+    def get_file_url(self, obj):
+        request = self.context.get('request')
+        if obj.file:
+            return request.build_absolute_uri(obj.file.url)
+        return None
 
 class FormSubmissionSerializer(serializers.ModelSerializer):
     form = FormsSerializer(read_only=True)
@@ -82,3 +87,10 @@ class FormSubmissionSerializer(serializers.ModelSerializer):
         return instance
 
 
+class AssignmentsForTeacher(serializers.ModelSerializer):
+    # form_field = FormsFieldsSerializer(read_only=True)  
+    form = FormsSerializer(read_only=True)
+    project = ProjectSerializer(read_only=True)
+    class Meta:
+        model = FormSubmission
+        fields = '__all__'

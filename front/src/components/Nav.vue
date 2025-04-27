@@ -11,6 +11,12 @@
       <div v-if="['Admin', 'Teacher'].includes(auth.user?.role ?? '')" class="text-xl font-bold text-gray-800">
         <NuxtLink to="/form/create">Create Form</NuxtLink>
       </div>
+      <div v-if="['Admin', 'Teacher'].includes(auth.user?.role ?? '')" class="text-xl font-bold text-gray-800">
+        <NuxtLink to="/form/link">Link Form & Subject</NuxtLink>
+      </div>
+      <div v-if="['Admin', 'Teacher'].includes(auth.user?.role ?? '')" class="text-xl font-bold text-gray-800">
+        <NuxtLink to="/dashboard">Dashboard</NuxtLink>
+      </div>
 
 
     </div>

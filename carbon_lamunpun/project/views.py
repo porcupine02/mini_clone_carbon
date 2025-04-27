@@ -1,7 +1,7 @@
 from django.db import IntegrityError
 from .models import Project, FormSubmission, FormFieldResponse
 from forms.models import Forms, FormFields
-from .serializers import ProjectSerializer, FormSubmissionSerializer, FormFieldResponseSerializer
+from .serializers import AssignmentsForTeacher, ProjectSerializer, FormSubmissionSerializer, FormFieldResponseSerializer
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.generics import ListCreateAPIView, ListAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework.parsers import MultiPartParser, FormParser
@@ -71,9 +71,10 @@ class FormFieldResponseByIdView(RetrieveUpdateDestroyAPIView):
     permission_classes = [IsAuthenticated]
     parser_classes = (MultiPartParser, FormParser) # TODO
 
-
 class AssignSubmissionView(APIView):
     permission_classes = [IsAuthenticated]
+    parser_classes = [MultiPartParser, FormParser]
+    
     def post(self, request, form_id):
         try:
             form = Forms.objects.get(pk=form_id)
@@ -90,25 +91,53 @@ class AssignSubmissionView(APIView):
             return Response({"detail": "Project not found."}, status=status.HTTP_400_BAD_REQUEST)
 
         user = request.user
-        submission, created = FormSubmission.objects.update_or_create(
-                form=form, 
+        
+        # Manually check if a FormSubmission exists, and update or create it.
+        submission = FormSubmission.objects.filter(form=form, project=project).first()
+        
+        if submission:
+            # If a submission already exists, update it
+            submission.updated_by = user
+            submission.save()
+            created = False  # It's an update, not a creation
+        else:
+            # If no submission exists, create a new one
+            submission = FormSubmission.objects.create(
+                form=form,
                 project=project,
-                updated_by=user,
-                defaults={'created_by': user}
-                )
+                created_by=user,
+                updated_by=user
+            )
+            created = True  # It's a creation, not an update
 
-        responses = request.data.get('fieldsResponse', [])
-        for response in responses:
+        fields_response_data = []
+        i = 0
+        while f'fieldsResponse[{i}][form_field]' in request.data:
+            form_field_id = request.data.get(f'fieldsResponse[{i}][form_field]')
+            value = request.data.get(f'fieldsResponse[{i}][value]')
+            file = request.FILES.get(f'fieldsResponse[{i}][file]')
+
+            fields_response_data.append({
+                'form_field': form_field_id,
+                'value': value,
+                'file': file,
+            })
+            i += 1
+        
+        for response in fields_response_data:
             try:
                 form_field = FormFields.objects.get(pk=response['form_field'])
             except FormFields.DoesNotExist:
                 return Response({"detail": f"Form field '{response['form_field']}' not found."}, status=status.HTTP_400_BAD_REQUEST)
+
             try:
                 field_response = FormFieldResponse.objects.get(
-                    form_submission=submission, form_field=form_field
+                    form_submission=submission,
+                    form_field=form_field
                 )
                 field_response.value = response.get('value', '')
-                field_response.file = response.get('file', None)
+                if response.get('file'):
+                    field_response.file = response['file']
                 field_response.updated_by = user
                 field_response.save()
 
@@ -123,10 +152,10 @@ class AssignSubmissionView(APIView):
                 )
 
         return Response({
-            "messange": "Submission assigned successfully.",
+            "message": "Submission assigned successfully.",
             "submission_id": submission.id
         }, status=status.HTTP_201_CREATED)
-    
+
     
 class FormSubmissionDetailView(APIView):
     permission_classes = [IsAuthenticated]
@@ -165,7 +194,7 @@ class GetSubmissionsByFormIdView(APIView):
             return Response({"detail": "No submissions found for this form."}, status=status.HTTP_204_NO_CONTENT)
 
         # Serialize the form submissions
-        serializer = FormSubmissionSerializer(submissions, many=True)
+        serializer = FormSubmissionSerializer(submissions, many=True, context={'request': request})
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
@@ -176,4 +205,16 @@ class ProjectBySubjectView(APIView):
     def get(self, request, subject_id):
         projects = Project.objects.filter(subject__id=subject_id)
         serializer = ProjectSerializer(projects, many=True)
+        return Response(serializer.data)
+
+class AssignmentForTeacherBySubjectView(APIView):
+    serializer_class = AssignmentsForTeacher
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, subject_id):
+        submissions = FormSubmission.objects.filter(
+            project__subject_id=subject_id,
+            project__teacher=request.user # Filter by current logged-in teacher
+        )
+        serializer = AssignmentsForTeacher(submissions, many=True)
         return Response(serializer.data)

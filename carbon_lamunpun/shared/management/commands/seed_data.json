@@ -1,0 +1,81 @@
+{
+    "groups": [
+        "Admin",
+        "Teacher",
+        "Student"
+    ],
+    "users": [
+        {
+            "username": "admin1",
+            "email": "admin1@main.com",
+            "password": "Admin@1234",
+            "first_name": "Admin",
+            "last_name": "One",
+            "group": "Admin"
+        },
+        {
+            "username": "admin2",
+            "email": "admin2@main.com",
+            "password": "Admin@1234",
+            "first_name": "Admin",
+            "last_name": "Two",
+            "group": "Admin"
+        },
+        {
+            "username": "teacher1",
+            "email": "teacher1@main.com",
+            "password": "Admin@1234",
+            "first_name": "Teacher",
+            "last_name": "One",
+            "group": "Teacher"
+        },
+        {
+            "username": "teacher2",
+            "email": "teacher2@main.com",
+            "password": "Admin@1234",
+            "first_name": "Teacher",
+            "last_name": "Two",
+            "group": "Teacher"
+        },
+        {
+            "username": "teacher3",
+            "email": "teacher3@main.com",
+            "password": "Admin@1234",
+            "first_name": "Teacher",
+            "last_name": "Three",
+            "group": "Teacher"
+        },
+        {
+            "username": "student1",
+            "email": "student@main.com",
+            "password": "Admin@1234",
+            "first_name": "Student",
+            "last_name": "One",
+            "group": "Student"
+        },
+        {
+            "username": "student2",
+            "email": "student2@main.com",
+            "password": "Admin@1234",
+            "first_name": "Student",
+            "last_name": "Two",
+            "group": "Student"
+        },
+        {
+            "username": "student3",
+            "email": "student3@main.com",
+            "password": "Admin@1234",
+            "first_name": "Student",
+            "last_name": "Three",
+            "group": "Student"
+        },
+        {
+            "username": "student4",
+            "email": "student4@main.com",
+            "password": "Admin@1234",
+            "first_name": "Student",
+            "last_name": "Four",
+            "group": "Student"
+        }
+    ]
+}

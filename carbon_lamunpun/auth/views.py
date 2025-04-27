@@ -1,16 +1,16 @@
 from rest_framework import status, permissions
 from rest_framework.response import Response
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 from forms.models import Subject
 from project.models import Project
-from .serializers import RegisterSerializer, LoginSerializer, TestSerializer, UserSerializer
+from .serializers import RegisterSerializer, LoginSerializer, TestSerializer, UserSerializer, RoleListSerializer
 from rest_framework.authtoken.models import Token
 from django.contrib.auth import authenticate
 from rest_framework_simplejwt.token_blacklist.models import BlacklistedToken, OutstandingToken
 from rest_framework.permissions import IsAuthenticated, AllowAny
-from rest_framework.generics import ListCreateAPIView
+from rest_framework.generics import ListCreateAPIView, ListAPIView
 
 class RegisterView(APIView):
     permission_classes = [permissions.AllowAny]
@@ -36,7 +36,7 @@ class LoginView(APIView):
         if user is not None:
             refresh = RefreshToken.for_user(user)
 
-            subject = Subject.objects.filter(created_by=user).first()
+            subject = Project.objects.filter(created_by=user).first()
             project = Project.objects.filter(created_by=user).first()
 
             role = None
@@ -78,6 +78,13 @@ class TeacherView(ListCreateAPIView):
     serializer_class = UserSerializer
     permission_classes = [IsAuthenticated]
     
+class RoleListView(ListAPIView):
+    queryset = Group.objects.all()
+    serializer_class = RoleListSerializer
+    # permission_classes = [IsAuthenticated]
+
+
+
 
 # TestSerializer
 class TestView(ListCreateAPIView):

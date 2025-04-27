@@ -15,6 +15,8 @@ export interface FormResponse {
   title: string;
   description: string;
   main: number | null;
+  starttime: Date;
+  endtime: Date;
   created_at: string;
   updated_at: string;
   created_by: number | null;
@@ -55,6 +57,7 @@ export interface CreateProjectResponse {
   updated_at: string;
   subject_detail: SubjectResponse;
   student_detail: User;
+  teacher_detail: User;
   created_by: number;
   updated_by: number;
 }
@@ -125,6 +128,8 @@ export interface Form {
   title: string;
   description: string;
   main: number | null;
+  starttime: Date;
+  endtime: Date;
   created_at: string;
   updated_at: string;
   created_by: number | null;
@@ -142,4 +147,15 @@ export interface Project {
   created_at: string;
   updated_at: string;
   updated_by: number | null;
+}
+export interface AssignmentTeacherResponse {
+  id: number;
+  form: Form;
+  project: CreateProjectResponse;
+  status: "Pending" | "Approved" | "Rejected";
+  created_at: string;
+  updated_at: string;
+  approve_by: number | null;
+  created_by: number;
+  updated_by: number;
 }

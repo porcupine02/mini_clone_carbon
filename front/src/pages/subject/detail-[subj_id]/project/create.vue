@@ -65,9 +65,6 @@ const form = ref({
 
 
 const getAuth = async () => {
-  // accessToken.value = localStorage.getItem('access_token') ?? ''
-  // const rawUser = localStorage.getItem('user')
-  // user.value = rawUser ? JSON.parse(rawUser) : null
 
   auth.loadFromCookies()
 

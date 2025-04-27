@@ -27,9 +27,6 @@ const getAuth = async () => {
 }
 onMounted(async () => {
     await getAuth()
-    accessToken.value = localStorage.getItem('access_token')
-    const rawUser = localStorage.getItem('user')
-    user.value = rawUser ? JSON.parse(rawUser) : null
 
 })
 const submitForm = async () => {
@@ -50,11 +47,19 @@ const submitForm = async () => {
             method: 'POST',
             body: payload,
             headers: {
-                Authorization: `Bearer ${accessToken.value}`
+                Authorization: `Bearer ${auth.accessToken}`
             }
         })
 
-        alert("Create form success.")
+        if (error.value) {
+
+            alert("Create form failed.")
+        } else {
+
+            alert("Create form success.")
+        }
+        navigateTo('/')
+
     } catch (err) {
         console.error('Error submitting form:', err)
     }
